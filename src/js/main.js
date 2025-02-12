@@ -1,5 +1,9 @@
+
+import Store from "./views/store.js";
 import Login from "./views/login.js";
+import Signup from "./views/signup.js";
 import Results from "./views/results.js";
+import "../css/main.css"
 
 // Routing
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,6 +26,16 @@ const routes = [
   },
   {
     path: "/",
+    title: "Store",
+    view: Store,
+  },
+  {
+    path: "/signup",
+    title: "SignUp",
+    view: Signup,
+  },
+  {
+    path: "/login",
     title: "Login",
     view: Login,
   },
