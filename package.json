@@ -6,7 +6,7 @@
     "private": true,
     "scripts": {
         "build": "webpack build --env development",
-        "serve": "nodemon server.cjs localhost 3000 --file nodemon.json"
+        "serve": "nodemon server.js localhost 3000 --watch ./app.js --watch ./routes/index.js --file nodemon.json"
     },
     "dependencies": {
         "@tailwindcss/postcss": "^4.0.6",
@@ -14,9 +14,13 @@
         "express-session": "^1.18.1",
         "mime-types": "^2.1.35",
         "mongodb": "^6.13.0",
+        "mongoose": "^8.10.0",
+        "morgan": "^1.10.0",
         "passport": "^0.7.0",
         "passport-local": "^1.0.0",
-        "tailwindcss": "^4.0.6"
+        "passport-local-mongoose": "^8.0.0",
+        "tailwindcss": "^4.0.6",
+        "three": "^0.173.0"
     },
     "devDependencies": {
         "@babel/core": "^7.26.8",

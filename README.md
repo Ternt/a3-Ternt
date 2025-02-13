@@ -1,24 +1,17 @@
-# Assignment 2
+# Assignment 3
 
-Thinh Pham: [project site](https://glitch.com/~a2-ternt)
+Thinh Pham: [project site](https://glitch.com/~a3-ternt)
 
-My application is a simple form that asks for your username, firstname, lastname, bday, and password. It then uses that to generate an email.
-For the styling, I used alot of flex box to center, space, and layout items. I had class styles to apply more general styling to the page and ID 
-styles for more specific elements. Additionally I have some extra dynamic JavaScript styling. The following components were styled through JavaScript:
+My application is a card collection website. You randomize to get a randomly generated card, 
+which you can then add to your account. You can then view that card in your, list of cards.
 
-- A password input component
-- An editable table field component
-- Text inputs
+Achievements
+- Admins can retrieve all data from a database and modify/delete it or add more. 
+- Used the tailwindcss framework for styling
+- Used ThreeJS for additional user interaction
 
-# Technical Achievements
-
-- Single Page Application
-- Modify data, data gets sent to the server
-- Delete data, request to delete data gets sent, performed. Updated data is sent back and client is updated.
-
-# Design Achievements
-
-1. Daniel Zhang
-2. Navigating between login and results was annoying, especially since the SPA implementation isn't robust.
-3. They said my editable table component was awesome.
-4. Rather than having them as two separate pages, I would have them together in one page so that the instant feedback is noticeable.
+UX Achievements
+- Labeled each form and button for screen readers
+- Used colors that have a contrast higher than 4.5:1. Contrast of 16.48:1
+- Made sure to provide informative and unique page titles
+- Added keyboard alternatives for most components

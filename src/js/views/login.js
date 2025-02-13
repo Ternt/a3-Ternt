@@ -7,36 +7,53 @@ const submit = async function (event) {
     };
 
     const body = JSON.stringify(json);
-    console.log(body);
-    const response = await fetch("/login/submit", {
+    const response = await fetch("/login", {
         method: "POST",
         body,
     });
 
-    // accepts the entire apps data as a response
-    const text = await response.text();
-    console.log(text);
+    switch (response.status) {
+        case 400: {
+            const labelGroup = document.getElementById('login-error');
+            const errorDiv = document.getElementsByClassName('error-message');
+            if (errorDiv.length < 1) {
+                const errorMessage = document.createElement('a');
+                errorMessage.classList.add('error-message');
+                errorMessage.innerHTML = "Incorrect user/pass"
+                labelGroup.appendChild(errorMessage);
+
+                setTimeout(() => {
+                    const labelGroup = document.getElementById('login-error');
+                    labelGroup.removeChild(labelGroup.lastElementChild);
+                }, 10000);
+            }
+        } break;
+        case 200: {
+            console.log("login successful!");
+        } break;
+    }
 };
 
 const Login = {
     render: async () => {
         return `
-<div id="main" class="body-section">
-<form class="login-form" action="/login/password">
-<div class="form-box">
-<label class="form-label" for="username">Username </label>
-<input class="form-input" type="text" id="username" value="username">
-</div>
-<div class="form-box">
-<label class="form-label" for="lastname">Password</label>
-<input class="form-input" type="text" id="password" value="password">
-</div>
-<div class="form-box" id="form-submission">
-<input class="form-trigger" type="button" id="form-button" value="Login">
-</div>
-</form>
-</div>
-`;
+            <div id="main" class="body-section">
+                <form class="login-form" action="/login/password">
+                    <div class="form-box">
+                        <label class="form-label" for="username">Username </label>
+                        <input class="form-input" type="text" id="username" value="username">
+                    </div>
+                    <div class="form-box">
+                        <label class="form-label" for="password">Password</label>
+                        <input class="form-input" type="text" id="password" value="password">
+                    </div>
+                    <div class="form-box" id="form-submission">
+                        <input class="form-trigger" type="button" id="form-button" value="Login">
+                    </div>
+                    <div id="login-error" class="form-label-group">
+                    </div class="form-label-group">
+                </form>
+            </div>`;
     },
     after_render: async () => {
         const button = document.getElementById("form-button");
@@ -49,16 +66,25 @@ const Login = {
             const input = allInput[i];
             let defaultValue = input.defaultValue;
 
-            input.onfocus = () => {
-                defaultValue = input.defaultValue;
-                input.value = "";
-            };
-
             input.onkeydown = (event) => {
                 if (event.key === "Escape") {
+                    if (input.classList[input.classList.length - 1] === "contains-data") {
+                        input.classList.remove("contains-data");
+                    }
+                    input.value = defaultValue;
+                    input.addEventListener("input", removeDefault, { once: true });
                     input.blur();
                 }
             };
+
+            const removeDefault = (event) => {
+                if (event.inputType === "insertText") {
+                    defaultValue = input.defaultValue;
+                    input.value = event.data;
+                }
+            };
+
+            input.addEventListener("input", removeDefault, { once: true });
 
             input.onblur = () => {
                 if (input.value.length > 0) {

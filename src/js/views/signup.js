@@ -1,8 +1,4 @@
 const submit = async function (event) {
-    // stop form submission from trying to load
-    // a new .html page for displaying results...
-    // this was the original browser behavior and still
-    // remains to this day
     event.preventDefault();
 
     const json = {
@@ -12,56 +8,71 @@ const submit = async function (event) {
         dateofbirth: document.querySelector("#dateofbirth").value,
         password: document.querySelector("#password").value,
     };
+
     const body = JSON.stringify(json);
-
-    console.log(body);
-
-    const response = await fetch("/signup/submit", {
+    const response = await fetch("/register", {
+        headers: {
+            "Content-Type": "application/json",
+        },
         method: "POST",
         body,
     });
 
-    // accepts the entire apps data as a response
-    const text = await response.text();
-    const data = JSON.parse(text);
+    switch (response.status) {
+        case 422: {
+            const labelGroup = document.getElementById('user-error');
+            const errorDiv = document.getElementsByClassName('error-message');
+            if (errorDiv.length < 1) {
+                const errorMessage = document.createElement('a');
+                errorMessage.classList.add('error-message');
+                errorMessage.innerHTML = "User already exists. Try a new username"
+                labelGroup.appendChild(errorMessage);
 
-    return data;
+                setTimeout(() => {
+                    const labelGroup = document.getElementById('user-error');
+                    labelGroup.removeChild(labelGroup.lastElementChild);
+                }, 10000);
+            }
+        } break;
+    }
 };
 
-const Login = {
+const SignUp = {
     render: async () => {
         return `
-<div id="main" class="body-section">
-<form class="login-form">
-<div class="form-box">
-<label class="form-label" for="username">Username </label>
-<input class="form-input" type="text" id="username" value="username">
-</div>
-<div class="form-group">
-<div class="form-box">
-<label class="form-label" for="firstname">First Name</label>
-<input class="form-input" type="text" id="firstname" value="first name">
-</div>
-<div class="form-box">
-<label class="form-label" for="lastname">Last Name</label>
-<input class="form-input" type="text" id="lastname" value="last name">
-</div>
-</div>
-<div class="form-box">
-<label class="form-label" for="dob">Date of Birth</label>
-<input class="form-input" type="date" id="dateofbirth" value="date of birth">
-</div>
-<div class="form-box">
-<label class="form-label" for="lastname">Password</label>
-<input class="form-input" type="text" id="password" value="password">
-</div>
-<div class="form-box" id="form-submission">
-<input class="form-trigger" type="button" id="form-button" value="Sign up">
-</div>
-</form>
-</div>
-`;
+            <div id="main" class="body-section">
+                <form class="login-form">
+                    <div class="form-box">
+                        <div id="user-error" class="form-label-group">
+                            <label class="form-label" for="username">Username </label>
+                        </div>
+                        <input class="form-input" type="text" id="username" value="username">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-box">
+                            <label class="form-label" for="firstname">First Name</label>
+                            <input class="form-input" type="text" id="firstname" value="first name">
+                        </div>
+                        <div class="form-box">
+                            <label class="form-label" for="lastname">Last Name</label>
+                            <input class="form-input" type="text" id="lastname" value="last name">
+                        </div>
+                    </div>
+                    <div class="form-box">
+                        <label class="form-label" for="dob">Date of Birth</label>
+                        <input class="form-input" type="date" id="dateofbirth" value="date of birth">
+                    </div>
+                    <div class="form-box">
+                        <label class="form-label" for="lastname">Password</label>
+                        <input class="form-input" type="text" id="password" value="password">
+                    </div>
+                    <div class="form-box" id="form-submission">
+                        <input class="form-trigger" type="button" id="form-button" value="Sign up">
+                    </div>
+                </form>
+            </div>`;
     },
+
     after_render: async () => {
         const button = document.getElementById("form-button");
         button.onclick = submit;
@@ -73,21 +84,25 @@ const Login = {
             const input = allInput[i];
             let defaultValue = input.defaultValue;
 
-            input.onfocus = () => {
-            };
-
             input.onkeydown = (event) => {
                 if (event.key === "Escape") {
+                    if (input.classList[input.classList.length - 1] === "contains-data") {
+                        input.classList.remove("contains-data");
+                    }
+                    input.value = defaultValue;
+                    input.addEventListener("input", removeDefault, { once: true });
                     input.blur();
                 }
             };
 
-            input.oninput = (event) => {
+            const removeDefault = (event) => {
                 if (event.inputType === "insertText") {
                     defaultValue = input.defaultValue;
-                    input.value = "";
+                    input.value = event.data;
                 }
             };
+
+            input.addEventListener("input", removeDefault, { once: true });
 
             input.onblur = () => {
                 if (input.value.length > 0) {
@@ -134,4 +149,4 @@ const Login = {
     },
 };
 
-export default Login;
+export default SignUp;

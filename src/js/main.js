@@ -1,7 +1,7 @@
 
 import Store from "./views/store.js";
 import Login from "./views/login.js";
-import Signup from "./views/signup.js";
+import SignUp from "./views/signup.js";
 import Results from "./views/results.js";
 import "../css/main.css"
 
@@ -26,22 +26,22 @@ const routes = [
   },
   {
     path: "/",
-    title: "Store",
+    title: "Collect Your Card • Card Collector",
     view: Store,
   },
   {
     path: "/signup",
-    title: "SignUp",
-    view: Signup,
+    title: "Sign Up • Card Collector",
+    view: SignUp,
   },
   {
     path: "/login",
-    title: "Login",
+    title: "Login • Card Collector",
     view: Login,
   },
   {
     path: "/results",
-    title: "Results",
+    title: "Card Collector - Results",
     view: Results,
   },
 ];
@@ -69,6 +69,7 @@ const router = async () => {
 
   let html = await match.route.view.render();
   document.querySelector("#content").innerHTML = html;
+  document.title = match.route.title;
   await match.route.view.after_render();
 };
 

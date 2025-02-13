@@ -10,7 +10,6 @@ module.exports = (env) => {
         output: {
             path: outputPath,
             filename: "[name].bundle.js",
-            clean: true,
         },
         module:{
             rules: [

@@ -3,12 +3,8 @@ const getTableData = async () => {
     const response = await fetch("/data");
 
     const text = await response.text();
-    let data; 
-    try {
-        data = JSON.parse(text);
-    } catch(err) {
-        console.error(err);
-    }
+    const data = JSON.parse(text);
+    console.log(data);
 
     return data;
 };
@@ -46,69 +42,75 @@ const changeData = async function (event, value) {
 
 export const Results = {
     render: async () => {
-        const appdata = await getTableData();
+        const data = await getTableData();
 
-        const table = document.createElement("table");
-        const headerrow = document.createElement("tr");
+        const page = document.createElement("div");
+        page.classList.add("page-container");
 
-        // dynamically creating table headers
-        for (const [key, value] of Object.entries(appdata[0])) {
-            if (key === "_id") {
-                continue; 
-            }
+        for (let collection = 0 ; collection < data.length ; ++collection) {
+            const appdata = data[collection];
+            const table = document.createElement("table");
+            const headerrow = document.createElement("tr");
 
-            const headers = document.createElement("th");
-            headers.innerHTML = key;
-            headers.setAttribute("headers", key);
-            headerrow.appendChild(headers);
-        }
-        // column for deleting data
-        const deletecolumn = document.createElement("th");
-        headerrow.appendChild(deletecolumn);
-        table.append(headerrow);
-
-        // dynamically creating data rows
-        for (let i = 0; i < appdata.length; i++) {
-            const row = document.createElement("tr");
-
-            for (const [key, value] of Object.entries(appdata[i])) {
+            // dynamically creating table headers
+            for (const [key, value] of Object.entries(appdata[0])) {
                 if (key === "_id") {
                     continue; 
                 }
 
-                const tabledata = document.createElement("td");
-                tabledata.classList.add("table-cell");
-                tabledata.setAttribute("header", key + "-" + (i + 1));
+                const headers = document.createElement("th");
+                headers.innerHTML = key;
+                headers.setAttribute("headers", key);
+                headerrow.appendChild(headers);
+            }
+            // column for deleting data
+            const deletecolumn = document.createElement("th");
+            headerrow.appendChild(deletecolumn);
+            table.append(headerrow);
 
-                tabledata.innerHTML = value;
-                row.appendChild(tabledata);
+            // dynamically creating data rows
+            for (let i = 0; i < appdata.length; i++) {
+                const row = document.createElement("tr");
+
+                for (const [key, value] of Object.entries(appdata[i])) {
+                    if (key === "_id") {
+                        continue; 
+                    }
+
+                    const tabledata = document.createElement("td");
+                    tabledata.classList.add("table-cell");
+                    tabledata.setAttribute("header", key + "-" + (i + 1));
+
+                    tabledata.innerHTML = value;
+                    row.appendChild(tabledata);
+                }
+
+                const deletecell = document.createElement("td");
+                const deletebutton = document.createElement("button");
+
+                deletecell.classList.add("delete-cell");
+
+                deletebutton.setAttribute("id", i.toString());
+                deletebutton.classList.add("delete-button");
+                deletebutton.innerHTML = "delete";
+
+                deletecell.append(deletebutton);
+                row.appendChild(deletecell);
+                table.appendChild(row);
             }
 
-            const deletecell = document.createElement("td");
-            const deletebutton = document.createElement("button");
+            const container = document.createElement("div");
+            const div = document.createElement("div");
 
-            deletecell.classList.add("delete-cell");
+            container.classList.add("result-table-container");
+            div.classList.add("result-table");
 
-            deletebutton.setAttribute("id", i.toString());
-            deletebutton.classList.add("delete-button");
-            deletebutton.innerHTML = "delete";
-
-            deletecell.append(deletebutton);
-            row.appendChild(deletecell);
-            table.appendChild(row);
-            ////////////////////////////////////////////////////////
+            div.appendChild(table);
+            container.appendChild(div);
+            page.appendChild(container);
         }
 
-        const container = document.createElement("div");
-        const div = document.createElement("div");
-
-        container.classList.add("result-table-container");
-        div.classList.add("result-table");
-
-        div.appendChild(table);
-        container.appendChild(div);
-
-        return container.outerHTML;
+        return page.outerHTML;
     },
 
     after_render: () => {
