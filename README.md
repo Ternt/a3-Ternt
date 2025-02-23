@@ -1,6 +1,6 @@
 # Assignment 3
 
-Thinh Pham: [project site](https://a3-ternt.vercel.app/)
+Thinh Pham: [project site](https://a3-ternt.glitch.me/)
 
 My application is supposedly a card collection website. You randomize to get a randomly generated card, 
 which you can then add to your account. You can then view that card in your, list of cards.
