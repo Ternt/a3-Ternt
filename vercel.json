@@ -1,9 +1,11 @@
 { 
   "version": 2, 
-  { "public": true },
-  { "outputDirectory": "public" },
-  { "installCommand": "npm install" },
-  "rewrites": [{ "source": "/(.*)", "destination": "/server" }], 
+  "rewrites": [
+    { 
+      "source": "/(.*)", 
+      "destination": "/server" 
+    }
+  ], 
   "builds": [
     {
       "src": "server/index.js",
