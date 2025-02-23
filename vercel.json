@@ -1,4 +1,19 @@
 { 
   "version": 2, 
-  "rewrites": [{ "source": "/(.*)", "destination": "/server" }] 
+  { "public": true },
+  { "outputDirectory": "public" },
+  { "installCommand": "npm install" },
+  "rewrites": [{ "source": "/(.*)", "destination": "/server" }], 
+  "builds": [
+    {
+      "src": "server/index.js",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server/index.js"
+    }
+  ]
 }
