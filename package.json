@@ -8,7 +8,7 @@
     "scripts": {
         "dev:build": "webpack build --env development --watch",
         "prod:build": "webpack build --env production",
-        "start": "nodemon server/app.cjs localhost 3000 --config nodemon.json"
+        "start": "nodemon server/index.cjs localhost 3000 --config nodemon.json"
     },
     "dependencies": {
         "@tailwindcss/postcss": "^4.0.6",
