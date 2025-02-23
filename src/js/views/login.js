@@ -1,10 +1,18 @@
+import { calculateUUID } from '../util.js'
+
 const auth = async function (event) {
     event.preventDefault();
 
+
+    // localStrategy solution
     const json = {
         username: document.querySelector("#username").value,
         password: document.querySelector("#password").value,
     };
+
+    // localStorage solution
+    const userId = calculateUUID(json);
+    const userData = JSON.parse(localStorage.getItem(userId));
 
     const body = JSON.stringify(json);
     const response = await fetch("/user/auth/login", {

@@ -11,7 +11,7 @@ const pageRoutes    = require('./routes/pageRoutes.cjs');
 const userRoutes    = require('./routes/userRoutes.cjs');
 const cardRoutes    = require('./routes/cardRoutes.cjs');
 
-const initApp = async () => {
+const initApp = () => {
     const app  = express();
 
     app.use(logger('dev'));
@@ -35,10 +35,9 @@ const initApp = async () => {
     app.use('/user', userRoutes);
     app.use('/card', cardRoutes);
 
-    await mongodb.connectDatabase();
-
     return app;
 }
+run = mongodb.connectDatabase().then(console.log("Database connected."));
 
 
 module.exports = initApp;

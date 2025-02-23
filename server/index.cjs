@@ -1,6 +1,7 @@
-import { initApp } from "./app";
+const initApp     = require('./app.cjs');
+const dotenv      = require('dotenv').config();
 
-const start = async () => {
+const start = () => {
   if (!process.env.PORT ||
     !process.env.HOST ||
     !process.env.EXPRESS_SESSION_SECRET ||
@@ -13,7 +14,10 @@ const start = async () => {
     console.error("Please set app env variables");
   }
 
-  const app = await initApp();
+  const app = initApp();
+  app.listen(process.env.PORT, () => {
+    console.log(`Server listening`)
+  });
 
   return app;
 }

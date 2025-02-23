@@ -3,6 +3,7 @@ import { calculateUUID } from '../util.js'
 const register = async function (event) {
     event.preventDefault();
 
+
     const json = {
         username: document.querySelector("#username").value,
         firstname: document.querySelector("#firstname").value,
@@ -11,9 +12,11 @@ const register = async function (event) {
         password: document.querySelector("#password").value,
     };
 
+    // localStorage solution
     const userId = calculateUUID(json);
     localStorage.setItem(userId, JSON.stringify(json));
 
+    // localStrategy solution
     const body = JSON.stringify(json);
     try {
         const response = await fetch("/user/register", {
