@@ -15,8 +15,8 @@ const start = async () => {
     }
 
     const app = await initApp();
-    app.listen(process.env.PORT, process.env.HOSTNAME, () => {
-        console.log(`Server listening at localhost:${process.env.PORT}`)
+    app.listen(process.env.PORT, () => {
+        console.log(`Server listening`)
     });
 }
 
