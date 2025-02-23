@@ -1,9 +1,11 @@
-
-import Store from "./views/store.js";
+import Home from "./views/home.js";
 import Login from "./views/login.js";
 import SignUp from "./views/signup.js";
 import Results from "./views/results.js";
-import "../css/main.css"
+
+import "@app/css/main.css"
+
+localStorage.setItem("appState", JSON.stringify({ visited: false, card: null }));
 
 // Routing
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,14 +22,14 @@ const routes = [
   {
     path: 404,
     title: "Error",
-    view: () => {
+    view: ()  => {
       console.log("error");
     },
   },
   {
     path: "/",
     title: "Collect Your Card • Card Collector",
-    view: Store,
+    view: Home,
   },
   {
     path: "/signup",
@@ -46,9 +48,9 @@ const routes = [
   },
 ];
 
-const navigateTo = (url) => {
+const navigateTo = async (url) => {
   history.pushState({}, "", url);
-  router();
+  await router();
 };
 
 const router = async () => {

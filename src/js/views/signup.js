@@ -1,4 +1,6 @@
-const submit = async function (event) {
+import { calculateUUID } from '../util.js'
+
+const register = async function (event) {
     event.preventDefault();
 
     const json = {
@@ -9,31 +11,37 @@ const submit = async function (event) {
         password: document.querySelector("#password").value,
     };
 
+    const userId = calculateUUID(json);
+    localStorage.setItem(userId, JSON.stringify(json));
+
     const body = JSON.stringify(json);
-    const response = await fetch("/register", {
-        headers: {
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body,
-    });
+    try {
+        const response = await fetch("/user/register", {
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            body,
+        });
 
-    switch (response.status) {
-        case 422: {
-            const labelGroup = document.getElementById('user-error');
-            const errorDiv = document.getElementsByClassName('error-message');
-            if (errorDiv.length < 1) {
-                const errorMessage = document.createElement('a');
-                errorMessage.classList.add('error-message');
-                errorMessage.innerHTML = "User already exists. Try a new username"
-                labelGroup.appendChild(errorMessage);
+        const result = await response.json();
+        if (!result.success) {
+            throw new Error(`Failed to register user`);
+        }
+    } catch (error) {
+        console.error(error.message);
 
-                setTimeout(() => {
-                    const labelGroup = document.getElementById('user-error');
-                    labelGroup.removeChild(labelGroup.lastElementChild);
-                }, 10000);
-            }
-        } break;
+        const labelGroup = document.getElementById('user-error');
+        const errorDiv = document.getElementsByClassName('error-message');
+        if (errorDiv.length < 1) {
+            const errorMessage = document.createElement('a');
+            errorMessage.classList.add('error-message');
+            errorMessage.innerHTML = "User already exists. Try a new username"
+            labelGroup.appendChild(errorMessage);
+
+            setTimeout(() => {
+                const labelGroup = document.getElementById('user-error');
+                labelGroup.removeChild(labelGroup.lastElementChild);
+            }, 10000);
+        }
     }
 };
 
@@ -42,6 +50,15 @@ const SignUp = {
         return `
             <div id="main" class="body-section">
                 <form class="login-form">
+                    <div class="auth-tabs">
+                        <button class="tab">
+                            <a href="/login">Login</a>
+                        </button>
+                        <button class="tab">
+                            <a href="/signup">Sign Up</a>
+                        </button>
+                    </div>
+                    <div class="form-area">
                     <div class="form-box">
                         <div id="user-error" class="form-label-group">
                             <label class="form-label" for="username">Username </label>
@@ -69,13 +86,14 @@ const SignUp = {
                     <div class="form-box" id="form-submission">
                         <input class="form-trigger" type="button" id="form-button" value="Sign up">
                     </div>
+                    </div>
                 </form>
             </div>`;
     },
 
     after_render: async () => {
         const button = document.getElementById("form-button");
-        button.onclick = submit;
+        button.onclick = register;
 
         // behaviours for the form input
         let defaultValue;

@@ -1,6 +1,6 @@
 // creating the results table
 const getTableData = async () => {
-    const response = await fetch("/data");
+    const response = await fetch("/data/all", { method: "GET" });
 
     const text = await response.text();
     const data = JSON.parse(text);
