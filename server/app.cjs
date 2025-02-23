@@ -54,11 +54,10 @@ const start = async () => {
     }
 
     const app = await initApp();
-    app.listen(process.env.PORT, () => {
-        console.log(`Server listening`);
-    });
 
     return app;
 }
 
-module.exports = start();
+const app = start();
+
+module.exports = app;
