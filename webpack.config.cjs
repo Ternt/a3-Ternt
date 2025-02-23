@@ -9,7 +9,6 @@ module.exports = (env) => {
   return {
     mode: (env.production) ? 'development' : 'production',
     entry: path.resolve(__dirname, "src/js/main.js"),
-    watch: (!env.production),
     watchOptions: {
       ignored: '**/node_modules',
       aggregateTimeout: 400,
