@@ -1,12 +1,11 @@
-const dotenv     = require('dotenv').config();
-const express    = require('express');
-const router     = express();
+const dotenv         = require('dotenv').config();
+const express        = require('express');
+const router         = express();
 
 const passport       = require('passport');
-const GitHubStrategy = require('passport-github2').Strategy;
 const LocalStrategy  = require('passport-local');
 
-const controller = require('../controller/userController.cjs');
+const controller     = require('../controller/userController.cjs');
 const { ensureAuth } = require('../util/authUtil.cjs');
 
 passport.use(new LocalStrategy({
@@ -44,10 +43,9 @@ passport.deserializeUser(function(user, done) {
 });
 
 router.post('/auth/login/', passport.authenticate('local', {
-    failureRedirect: '/login',
     failureMessage: true
 }), (req, res) => {
-    res.status(200).send({success: true});
+    res.redirect('/');
 });
 
 router.post('/register', (req, res) => {
@@ -60,10 +58,22 @@ router.post('/register', (req, res) => {
     }
 });
 
-router.get('/check', ensureAuth,
-    function (req, res, next) {
-        next();
+router.post('/logout', function(req, res, next) {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/');
     });
+});
 
+router.get('/check', (req, res, next) => {
+    if (req.isAuthenticated()) {
+        res.status(200).send({
+            username: req.session.passport.user.username,
+            authenticated: true
+        });
+    } else {
+        res.status(200).send({authenticated: false});
+    }
+})
 
 module.exports = router;

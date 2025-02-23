@@ -2,10 +2,15 @@ import Home from "./views/home.js";
 import Login from "./views/login.js";
 import SignUp from "./views/signup.js";
 import Results from "./views/results.js";
+import Account from "./views/account.js";
 
 import "@app/css/main.css"
 
-localStorage.setItem("appState", JSON.stringify({ visited: false, card: null }));
+if (
+    !localStorage.getItem("visited")
+) {
+  localStorage.setItem("visited", "false");
+}
 
 // Routing
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,6 +50,11 @@ const routes = [
     path: "/results",
     title: "Card Collector - Results",
     view: Results,
+  },
+  {
+    path: "/account",
+    title: "Card Collector - User Account",
+    view: Account,
   },
 ];
 

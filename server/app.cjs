@@ -9,6 +9,7 @@ const dotenv       = require('dotenv').config();
 const mongodb       = require('./persistence/mongoUtil.cjs');
 const pageRoutes    = require('./routes/pageRoutes.cjs');
 const userRoutes    = require('./routes/userRoutes.cjs');
+const cardRoutes    = require('./routes/cardRoutes.cjs');
 
 const initApp = async () => {
     const app  = express();
@@ -32,6 +33,7 @@ const initApp = async () => {
 
     app.use(pageRoutes);
     app.use('/user', userRoutes);
+    app.use('/card', cardRoutes);
 
     await mongodb.connectDatabase();
 

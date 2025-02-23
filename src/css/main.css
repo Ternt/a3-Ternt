@@ -121,7 +121,7 @@ to {
     transition: 300ms;
 }
 .glow-hover:hover {
-    text-shadow: 0 0 10px var(--text-secondary);
+    text-shadow: 0 0 10px currentColor;
 }
 .blur {
     filter: blur(6px);
@@ -198,7 +198,7 @@ to {
     font-weight: 700;
     min-width: 1rem;
     min-height: 1rem;
-    margin-right: 2rem;
+    margin-left: 1.5rem;
 }
 .body-section {
     width: 100vw;
@@ -207,8 +207,6 @@ to {
 }
 #main {
     background-color: var(--main-bg-color);
-    flex-direction: column;
-    align-items: center;
     gap: 2rem;
 }
 #content-feed {
@@ -423,3 +421,26 @@ to {
     align-items: center;
     justify-content: center;
 }
+
+/* account */
+.carousel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.svg-buttons {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon-tabler {
+    width: 3rem;
+    height: 3rem;
+    transition: 250ms;
+}
+.icon-tabler:hover {
+    color: var(--text-secondary);
+}
+

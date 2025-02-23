@@ -1,14 +1,19 @@
 const { mongodb } = require('../persistence/mongoUtil.cjs');
+const mongo = require("mongodb");
 
 const getAllUsers = async () => {
-    const collection = await mongodb.db.collection('Users');
+    const dbname = 'Users';
+    const collection = await mongodb.db.collection(dbname);
 
     try {
         const user = await collection.find({}).toArray(function (err) {
             throw new Error(err);
         });
 
-        return user;
+        return {
+            name: dbname,
+            data: user,
+        };
     } catch (err) {
         console.error(err);
         return false;
@@ -48,7 +53,6 @@ const verifyUser = async (username, password) => {
 
         return user;
     } catch (err) {
-        console.error(err);
         return false;
     }
 }
@@ -61,11 +65,41 @@ const insertUser = async (data) => {
             return {success:false};
         }
 
-        collection.insertOne(data, function( err, res ) {
-            if (err) throw err;
-            console.log("1 document inserted");
-            return {success:true};
-        });
+        await collection.insertOne(data);
+        return {success:true};
+    } catch (err) {
+        console.error(err);
+        return {success:false};
+    }
+}
+
+const deleteUser = async (data) => {
+    try {
+        const dbname = 'Users';
+        const collection = await mongodb.db.collection(dbname);
+        const query = {
+            _id: new mongo.ObjectId(data._id),
+        }
+        await collection.deleteOne(query);
+        return {success:true};
+    } catch (err) {
+        console.error(err);
+        return {success:false};
+    }
+}
+
+const changeUserData = async (field, value) => {
+    try {
+        const dbname = 'Users';
+        const collection = await mongodb.db.collection(dbname);
+        const query = { _id: new mongo.ObjectId(field._id) }
+        const newValue = {
+            $set: {
+                [field.key]: value,
+            }
+        }
+        await collection.updateOne(query, newValue);
+        return {success:true};
     } catch (err) {
         console.error(err);
         return {success:false};
@@ -77,4 +111,6 @@ module.exports = {
     findUserById: findUserById,
     verifyUser: verifyUser,
     insertUser: insertUser,
+    deleteUser: deleteUser,
+    changeUserData: changeUserData,
 }

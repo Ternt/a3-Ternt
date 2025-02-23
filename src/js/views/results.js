@@ -11,11 +11,15 @@ const getTableData = async () => {
 
 const deleteData = async function (event) {
     event.preventDefault();
+    const json = {
+        _id: event.originalTarget.dataset._id,
+        collection: event.originalTarget.dataset.collection_name
+    };
 
-    const body = event.originalTarget.id;
-    const response = await fetch("/delete", {
+    const response = await fetch("/data/delete", {
+        headers: { "Content-Type": "application/json" },
         method: "POST",
-        body,
+        body: JSON.stringify(json),
     });
 
     const text = await response.text();
@@ -25,19 +29,24 @@ const deleteData = async function (event) {
 };
 
 const changeData = async function (event, value) {
-    console.log(event.originalTarget);
+    event.preventDefault();
+    const dataField = event.originalTarget.parentNode;
+    const json = {
+        collection: dataField.parentNode.parentNode.parentNode.id,
+        field: {
+            _id: dataField.parentNode.dataset._id,
+            key: dataField.dataset.key,
+            value: dataField.dataset.value,
+        },
+        value: value
+    };
+    console.log(json);
 
-    const json = { id: event.originalTarget.id, value: value };
-    const body = JSON.stringify(json);
-    const response = await fetch("/change", {
+    const response = await fetch("/data/change", {
+        headers: { "Content-Type": "application/json" },
         method: "POST",
-        body,
+        body: JSON.stringify(json),
     });
-
-    const text = await response.text();
-    const data = JSON.parse(text);
-
-    return data;
 };
 
 export const Results = {
@@ -47,17 +56,20 @@ export const Results = {
         const page = document.createElement("div");
         page.classList.add("page-container");
 
-        for (let collection = 0 ; collection < data.length ; ++collection) {
-            const appdata = data[collection];
+        for (let index = 0 ; index < data.length ; ++index) {
+            const collection      = data[index];
+            const collection_data = collection.data;
+            const collection_name = collection.name;
+
+            const header = document.createElement("h1");
+            header.textContent = collection_name;
+
             const table = document.createElement("table");
+            table.id = collection_name;
             const headerrow = document.createElement("tr");
 
             // dynamically creating table headers
-            for (const [key, value] of Object.entries(appdata[0])) {
-                if (key === "_id") {
-                    continue; 
-                }
-
+            for (const [key, value] of Object.entries(collection_data[0])) {
                 const headers = document.createElement("th");
                 headers.innerHTML = key;
                 headers.setAttribute("headers", key);
@@ -69,19 +81,20 @@ export const Results = {
             table.append(headerrow);
 
             // dynamically creating data rows
-            for (let i = 0; i < appdata.length; i++) {
+            for (let i = 0; i < collection_data.length; i++) {
+                const { _id, name } = collection_data[i];
+
                 const row = document.createElement("tr");
+                row.dataset._id = _id;
 
-                for (const [key, value] of Object.entries(appdata[i])) {
-                    if (key === "_id") {
-                        continue; 
-                    }
-
+                for (const [key, value] of Object.entries(collection_data[i])) {
                     const tabledata = document.createElement("td");
                     tabledata.classList.add("table-cell");
+                    tabledata.dataset.value = value.toString();
+                    tabledata.dataset.key   = key.toString();
                     tabledata.setAttribute("header", key + "-" + (i + 1));
 
-                    tabledata.innerHTML = value;
+                    tabledata.textContent = value.toString();
                     row.appendChild(tabledata);
                 }
 
@@ -91,8 +104,10 @@ export const Results = {
                 deletecell.classList.add("delete-cell");
 
                 deletebutton.setAttribute("id", i.toString());
+                deletebutton.dataset._id = _id;
+                deletebutton.dataset.collection_name = collection_name;
                 deletebutton.classList.add("delete-button");
-                deletebutton.innerHTML = "delete";
+                deletebutton.textContent = "delete";
 
                 deletecell.append(deletebutton);
                 row.appendChild(deletecell);
@@ -106,6 +121,7 @@ export const Results = {
             div.classList.add("result-table");
 
             div.appendChild(table);
+            container.appendChild(header);
             container.appendChild(div);
             page.appendChild(container);
         }
@@ -181,7 +197,7 @@ export const Results = {
             const deletebutton = deletebuttons[i];
             deletebutton.onclick = async (event) => {
                 await deleteData(event).then(() => {
-                    const table = document.querySelector("table");
+                    const table = document.getElementById(event.originalTarget.dataset.collection_name);
                     table.deleteRow(Number(event.originalTarget.id) + 1);
                 });
             };

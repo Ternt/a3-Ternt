@@ -26,6 +26,10 @@ const register = async function (event) {
         if (!result.success) {
             throw new Error(`Failed to register user`);
         }
+
+        const origin = window.location.origin;
+        const virtualPath = 'login';
+        window.location.replace(`${origin}/${virtualPath}`);
     } catch (error) {
         console.error(error.message);
 
